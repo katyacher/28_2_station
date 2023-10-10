@@ -5,6 +5,7 @@
 #include <mutex>
 
 std::mutex station_lock;
+std::mutex stdout_accses;
 
 class Train {
     std::string name = "";
@@ -22,7 +23,11 @@ public:
     };
 
     void wait(){
-        std::cout << "The train " << name << " is waiting to arrive." << std::endl;
+        std::cout << "\nThe train " << name << " is waiting to arrive." << std::endl;
+    };
+
+    void wait_depart(){
+        std::cout << "The train " << name << " is waiting to depart( type \"depart\"): ";
     };
 
     void depart(){
@@ -42,15 +47,19 @@ void station(Train* t){
     }
 
     station_lock.lock();
-    t->arrival();
 
+    stdout_accses.lock();
+    t->arrival();
+    stdout_accses.unlock();
+    
     std::string command;
     do{
-        std::cout << "The train is waiting to depart( type \"depart\"): ";
-        std::getline(std::cin, command);
+        t->wait_depart();
+        std::cin >> command;
     }while(command != "depart");
 
     t->depart();
+   
     station_lock.unlock();   
 }
 
