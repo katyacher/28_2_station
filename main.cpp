@@ -90,7 +90,7 @@ int main(int, char**){
     std::vector<std::thread> trainThreads(3);
 
     for(int i = 0; i < trainThreads.size(); ++i)
-        trainThreads[i] = std::thread(station, std::ref(trains[i]));
+        trainThreads[i] = std::thread(station, trains[i]);
 
     for(int i = 0; i < trainThreads.size(); ++i)
         trainThreads[i].join();
